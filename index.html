@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+		body, html {
+		  height: 100%;
+		  width: 100%;
+		  margin: 0;
+		}		
+       #map {
+        height: 100%;
+        width: 100%;
+       }
+    </style>
+	<title>Sydney Weekend</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+	  function initMap() {
+			var map = new google.maps.Map(document.getElementById('map'), {
+			  zoom: 14,
+			  center: {lat:-33.8559701, lng:151.2113819}
+			});
+			
+			var infowindow = null;
+		
+			/* now inside your initialise function */
+			infowindow = new google.maps.InfoWindow({
+				content: "holding..."
+			});
+			var Markers = {};
+			
+			for(i=0; i<events.length; i++) {
+				var position = new google.maps.LatLng(events[i]['lat'], events[i]['lng']);
+				var marker = new google.maps.Marker({
+					position: position,
+					map: map,
+				});
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					return function() {
+						infowindow.setContent(buildInfoContent(events[i]));
+						infowindow.setOptions({maxWidth: 200});
+						infowindow.open(map, marker);
+					}
+				}) (marker, i));
+				Markers[i] = marker;
+			}
+		
+		
+      }
+	  
+	  function buildInfoContent(event) {
+		if (event['link']) {
+			return "<p>" + event['name'] + '</p><a href="'+event['link']+'" target="_blank" class="event-link">Details</a>';
+		} else {
+			return "<p>" + event['name'] + '</p>';
+		}		
+	  }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0ILix4ktHwHNP3kj4c2Tgd2vnSAGgVuY&callback=initMap"></script>
+	<script async defer src="events.js"></script>
+  </body>
+</html>
